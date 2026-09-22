@@ -1,46 +1,50 @@
 # Synapse
 
-A hackathon demo of pre-merge coordination between three coding agents. Each agent publishes its intended file touches before implementation; the coordinator detects overlap, applies exclusive ownership, and accepts only conflict-free ChangeSets.
+Pre-merge coordination for AI coding agents working on the same repository.
+
+When two or more coding agents (Claude Code, Codex, Copilot, or scripted workers) touch one codebase, Git only notices the collision at merge time. Synapse moves that check earlier: every agent declares the files and contracts it intends to touch before it writes anything, a coordinator enforces exclusive ownership, and only ChangeSets that match an approved declaration are accepted. Every decision is recorded so you can see why a change was allowed or blocked.
+
+**Status:** early and actively changing. This started as a team project at VT Hacks 14 (Sep 2026) and is now being continued as a single-developer tool. The code here is the hackathon snapshot; the [Roadmap](#roadmap) says where it is going.
+
+## How it works
+
+1. An agent joins the coordinator and claims a workstream.
+2. It publishes an intention: the files, symbols, and API contracts it plans to change.
+3. The coordinator checks that intention against every other active declaration and rejects overlaps, out-of-scope paths, and contract conflicts.
+4. The agent implements and submits a ChangeSet. The coordinator validates it against the approved intention before anything is written.
+5. Every join, declaration, block, and commit is written to a trace so the decision trail survives the run.
+
+Agents talk to the coordinator over HTTP or over MCP, so any MCP-capable coding agent can participate without custom glue.
 
 ## Quick start
 
-Prerequisites: Git, Python 3.13, [uv](https://docs.astral.sh/uv/), and Node 22.12+ (22.x) with npm. `.python-version` and `.nvmrc` record the development runtimes.
+Prerequisites: Git, Python 3.13, [uv](https://docs.astral.sh/uv/), and Node 22.12+ with npm. `.python-version` and `.nvmrc` record the development runtimes.
 
 ```sh
-git clone https://github.com/Jeewant05/VT-Hacks-14-Project.git
-cd VT-Hacks-14-Project
+git clone https://github.com/Jeewant05/synapse.git
+cd synapse
 cp .env.example .env
 npm run setup
 npm run dev
 ```
 
-Open http://127.0.0.1:5173. The dashboard opens on the live coding workspace; **Open workspace hub** shows the coordinator, integrations, and project memory. API documentation is at http://127.0.0.1:8000/docs. Stop both services with Ctrl+C.
+Open http://127.0.0.1:5173 for the local dashboard. API docs are at http://127.0.0.1:8000/docs. Stop both with Ctrl+C.
 
-No credentials are required for the guided simulation. The default `IDENTITY_MODE=mock`
-uses a local allowlist: mock identity results are fixtures, not ANS verification, and
-seeded decisions are local fixtures.
+No credentials are needed for the guided simulation. The default `IDENTITY_MODE=mock` uses a local allowlist, and the seeded decisions are local fixtures.
 
-## Deployments
+## Using it from a coding agent (MCP)
 
-| App | URL | Shows |
-| --- | --- | --- |
-| `synapse-vt` | https://synapse-vt.us | ANS-verified coordinator: badge-tier identity, DPoP proofs, per-agent cards. Live agents are not configured here yet |
-| `synapse-vt-live` | https://synapse-vt-live.fly.dev | Latest dashboard, live three-agent runs on Gemini, Databricks trace persistence (mock identity) |
+The coordinator ships as a stdio MCP server exposing six tools: join, claim workstream, declare contract, reassign scope, submit ChangeSet, and read state.
 
-Reset on either site asks for the operator token. Deployment details, secrets and known issues: [docs/DEPLOY.md](docs/DEPLOY.md).
+```sh
+uv run python -m server.mcp_server
+```
 
-## Agent Name Service
+`.mcp.json` in the repo root is a working config for Claude Code; other MCP clients point at the same command.
 
-`IDENTITY_MODE=ans` performs real Agent Name Service verification: a transparency-log
-badge for identity and liveness, plus an ANS-6 Method B proof of possession on every
-privileged call. It needs registered agents and credentials — see [docs/ANS.md](docs/ANS.md).
-In that mode the dashboard is driven by the server-side runner, because a browser cannot
-hold agent identity keys.
+## Live agents
 
-
-## Live coding demo (Virginia Tech ARC)
-
-Mint an API key at [llm.arc.vt.edu](https://llm.arc.vt.edu), then add it to `.env`:
+Synapse can drive three LLM-backed agents (backend, frontend, integration) through a full run. Each role picks a provider and model via `.env`:
 
 ```sh
 BACKEND_PROVIDER=arc
@@ -51,15 +55,19 @@ ARC_API_KEY_FRONTEND=
 ARC_API_KEY_QA=
 ```
 
-ARC is an OpenAI-compatible chat-completions API at `llm-api.arc.vt.edu`, and each role picks its model through `ARC_MODEL_BACKEND`, `_FRONTEND`, and `_QA` (default `gpt-oss-120b`). Gemini and Hugging Face remain available through the `BACKEND_PROVIDER`, `FRONTEND_PROVIDER`, and `QA_PROVIDER` values. Provider-side limits can still apply, so transient 429 and 5xx responses are retried with bounded backoff.
+`arc` is Virginia Tech's OpenAI-compatible endpoint at `llm-api.arc.vt.edu` (key from [llm.arc.vt.edu](https://llm.arc.vt.edu)); `gemini` and `huggingface` are also supported. Models are chosen per role with `ARC_MODEL_BACKEND`, `_FRONTEND`, `_QA` (default `gpt-oss-120b`). Transient 429/5xx responses are retried with bounded backoff.
 
-First, all three agents generate an intention in parallel. The coordinator shares those intentions with every agent, then starts implementation: backend and frontend build concurrently, and integration reviews their staged output. Nothing is written until every proposal passes ownership, path, duplicate, and size validation.
+A run has two phases. All three agents generate intentions in parallel; the coordinator shares them, then backend and frontend implement concurrently while integration reviews their staged output. Every proposed path is checked against its role (`backend/**`, `frontend/**`, `integration/**`) and written under `.local/live-runs/<run-id>`. Generated code never touches the Synapse repo itself and is never executed automatically.
 
-Every proposed path is checked against its role (`backend/**`, `frontend/**`, or `integration/**`) before the coordinator writes it under `.local/live-runs/<run-id>`; generated code never edits the Synapse repository and is not executed automatically.
+## Configuration
 
-## Databricks trace layer
+| Variable | Values | Notes |
+| --- | --- | --- |
+| `IDENTITY_MODE` | `mock` (default), `ans` | `ans` performs real GoDaddy Agent Name Service verification and needs registered agents and credentials; see [docs/ANS.md](docs/ANS.md). Kept from the hackathon; not the direction of the project. |
+| `TRACE_MODE` | `cache` (default), `databricks` | `databricks` persists traces to a Delta table; needs `DATABRICKS_HOST`, `_TOKEN`, `_WAREHOUSE_ID`, `_CATALOG`, `_SCHEMA` and [the trace schema](docs/databricks-trace-schema.sql). Incomplete settings fall back to the in-process store. |
+| `DATABASE_PATH` | path | SQLite workspace state, default `.local/synapse.db` |
 
-Set `TRACE_MODE=databricks` with `DATABRICKS_HOST`, `DATABRICKS_TOKEN`, `DATABRICKS_WAREHOUSE_ID`, `DATABRICKS_CATALOG`, and `DATABRICKS_SCHEMA` to persist coordinator and live-agent events. Create the destination from [the trace schema](docs/databricks-trace-schema.sql). `GET /api/traces` reads the newest records; `GET /api/traces?run_id=run-…` filters a live run. Incomplete settings safely retain the in-process cache trace store.
+`GET /api/traces` reads the newest trace records; `?run_id=run-…` filters a single live run.
 
 ## Commands
 
@@ -71,31 +79,41 @@ Set `TRACE_MODE=databricks` with `DATABRICKS_HOST`, `DATABRICKS_TOKEN`, `DATABRI
 | `npm run contracts` | Export Python schemas/OpenAPI and generate UI API types |
 | `npm run seed` | Seed fixtures if no objective exists; preserve existing state |
 | `npm run reset` | Replace local workspace state with initial fixtures |
-| `npm run check` | Python lint, foundation smoke tests, TypeScript check, UI build |
-| `npm run rehearse` | Check a running, seeded API; not the final product rehearsal |
-| `npm run ans -- <step>` | Drive ANS registration (`generate`, `register`, `records`, `acme`, `dns`, `status`, `certs`) |
-| `npm run ans:check` | Resolve the seeded ANSNames and report what a verifier would decide |
+| `npm run check` | Python lint, tests, TypeScript check, UI build |
+| `npm run rehearse` | Smoke-check a running, seeded API |
+| `npm run ans -- <step>` | ANS registration steps (`generate`, `register`, `records`, `acme`, `dns`, `status`, `certs`) |
+| `npm run ans:check` | Resolve seeded ANSNames and report what a verifier would decide |
 
-The database defaults to `.local/synapse.db`. Reset touches only local workspace state; it does not contact sponsor services. Do not use the local reset command against any future shared or production store.
+Use `uv sync --locked` and `npm ci` for repeatable installs; exact resolutions are committed in `uv.lock` and `package-lock.json`.
 
-## Layout and ownership
+## Layout
 
-| Directory | Purpose | Owner |
-| --- | --- | --- |
-| `server/` | API, models, SQLite, coordinator and integration interfaces | P1; P3/P4 implement their adapters |
-| `ui/` | React/TypeScript dashboard | P2 |
-| `agents/` | Scripted coordinator clients and smoke checks | P2 with P1 |
-| `.local/live-runs/` | Ignored, isolated output from live agent runs | Coordinator |
-| `contracts/` | Generated schemas and sample state | P1 approves interface changes |
-| `scripts/` | Setup support, contracts, seed/reset, smoke check | P1 |
-| `docs/` | Scope, ownership, demo instructions | All |
+| Directory | Purpose |
+| --- | --- |
+| `server/` | FastAPI app, models, SQLite, coordinator, MCP server, provider adapters |
+| `ui/` | React/TypeScript local dashboard |
+| `agents/` | Scripted coordinator clients and smoke checks |
+| `contracts/` | Generated schemas and sample state |
+| `scripts/` | Setup, contracts, seed/reset, smoke check |
+| `docs/` | Architecture, setup, ANS, Databricks schema |
+| `.local/` | Ignored: SQLite state and live-run output |
 
-Pydantic models in `server/app/models.py` are the source of truth. Run `npm run contracts` after model or endpoint changes, and commit all generated files. Do not edit `ui/src/api.generated.ts` manually. Exact dependency resolutions are committed in `uv.lock` and `package-lock.json`; use `uv sync --locked` and `npm ci` for repeatable installs.
+Pydantic models in `server/app/models.py` are the source of truth. Run `npm run contracts` after model or endpoint changes and commit the generated files; do not edit `ui/src/api.generated.ts` by hand. The [orchestration v1 contract](contracts/orchestration-api-v1.json) is frozen and the test suite rejects changes to its `/api` operations; additive work goes in a versioned endpoint.
 
-The coordinator exposes health/state reads plus agent join, workstream claim, contract declaration, scope reassignment, ChangeSet submission, and local reset endpoints. The guided UI calls these endpoints through the Vite `/api` proxy. An MCP server (`uv run python -m server.mcp_server`, stdio) exposes the same six operations as tools, so any MCP-capable coding agent can join, declare, scope and submit through the coordinator. Deployment is described in [docs/DEPLOY.md](docs/DEPLOY.md).
+## Roadmap
 
-The stricter orchestration API lives under `/api`. It registers three codebase demo agents, requires a structured Intention Document before execution, blocks deterministic file/symbol/contract/dependency/permission conflicts, validates submitted ChangeSets against their approved intention, and records the workflow through the configured trace sink. See [the three-agent workflow](agents/README.md#three-agent-orchestration-demo).
+Synapse is being built for one developer running several agents on their own repositories. In rough order:
 
-The checked-in [orchestration v1 contract](contracts/orchestration-api-v1.json) is frozen for frontend work. The verification suite rejects changes to its `/api` operations or response schemas. Additive API work belongs in a new versioned endpoint or a deliberate v2 contract update.
+- Coordinate two real agents on a real repo end to end, with no scripted scenario.
+- Make the MCP server and a CLI the primary interface; the web UI becomes a local viewer.
+- Replace GoDaddy ANS with a local per-agent keypair for signing ChangeSets (`IDENTITY_MODE=local`).
+- Remove hosting-only code: deploy configs, operator tokens, CORS settings, remote reset.
+- Keep Databricks tracing optional; SQLite traces are the default.
 
-See [scope and team handoff](docs/SETUP.md) and [demo runbook](docs/DEMO.md). Keep secrets in ignored `.env`; never commit credentials, keys, or local database files.
+## Origin
+
+Started at VT Hacks 14 (September 2026) with Amanjeet Sahagal, Hoai Vo, and Aiden Mathews. The hackathon submission is preserved at [Jeewant05/VT-Hacks-14-Project](https://github.com/Jeewant05/VT-Hacks-14-Project). Everything from this repository's first commit onward is a separate, single-developer continuation.
+
+## License
+
+MIT. See [LICENSE](LICENSE).
