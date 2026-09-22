@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "synapse": {
+      "command": "uv",
+      "args": ["run", "python", "-m", "server.mcp_server"],
+      "env": { "SYNAPSE_BASE_URL": "http://127.0.0.1:8000" }
+    }
+  }
+}

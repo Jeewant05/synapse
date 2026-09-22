@@ -1,0 +1,39 @@
+app = "synapse-vt-live"
+primary_region = "iad"
+
+[build]
+  dockerfile = "Dockerfile"
+
+[env]
+  IDENTITY_MODE = "mock"
+  MEMORY_MODE = "cache"
+  TRACE_MODE = "databricks"
+  ANS_PUBLIC_BASE_URL = "https://synapse-vt-live.fly.dev"
+  ANS_DOMAIN = "synapse-vt.us"
+  CORS_ORIGINS = "https://synapse-vt-live.fly.dev"
+  DATABASE_PATH = "/data/synapse.db"
+  LOCAL_BASE_URL = "http://127.0.0.1:8080"
+  BACKEND_PROVIDER = "gemini"
+  FRONTEND_PROVIDER = "gemini"
+  QA_PROVIDER = "gemini"
+  GEMINI_MODEL = "gemini-3.6-flash"
+
+[http_service]
+  internal_port = 8080
+  force_https = true
+  auto_stop_machines = "suspend"
+  auto_start_machines = true
+  min_machines_running = 1
+
+  [http_service.concurrency]
+    type = "requests"
+    soft_limit = 50
+    hard_limit = 100
+
+[[mounts]]
+  source = "synapse_data"
+  destination = "/data"
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"

@@ -1,0 +1,1187 @@
+{
+  "$defs": {
+    "AgentPrincipal": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "ans_name": {
+          "title": "Ans Name",
+          "type": "string"
+        },
+        "role": {
+          "title": "Role",
+          "type": "string"
+        },
+        "verified": {
+          "default": false,
+          "title": "Verified",
+          "type": "boolean"
+        },
+        "ans_agent_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ans Agent Id"
+        },
+        "identity_cert_fingerprint": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Identity Cert Fingerprint"
+        },
+        "ans_status": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ans Status"
+        }
+      },
+      "required": [
+        "id",
+        "ans_name",
+        "role"
+      ],
+      "title": "AgentPrincipal",
+      "type": "object"
+    },
+    "ApiContract": {
+      "properties": {
+        "method": {
+          "enum": [
+            "GET",
+            "POST",
+            "PUT",
+            "PATCH",
+            "DELETE"
+          ],
+          "title": "Method",
+          "type": "string"
+        },
+        "path": {
+          "title": "Path",
+          "type": "string"
+        },
+        "role": {
+          "enum": [
+            "provides",
+            "consumes"
+          ],
+          "title": "Role",
+          "type": "string"
+        },
+        "request_fields": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Request Fields",
+          "type": "object"
+        },
+        "response_fields": {
+          "additionalProperties": {
+            "type": "string"
+          },
+          "title": "Response Fields",
+          "type": "object"
+        }
+      },
+      "required": [
+        "method",
+        "path",
+        "role"
+      ],
+      "title": "ApiContract",
+      "type": "object"
+    },
+    "ChangeSet": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "workstream_id": {
+          "title": "Workstream Id",
+          "type": "string"
+        },
+        "agent_id": {
+          "title": "Agent Id",
+          "type": "string"
+        },
+        "commit_sha": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Commit Sha"
+        },
+        "files": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Files",
+          "type": "array"
+        },
+        "contract": {
+          "$ref": "#/$defs/ApiContract"
+        },
+        "tests": {
+          "items": {
+            "$ref": "#/$defs/TestResult"
+          },
+          "title": "Tests",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "workstream_id",
+        "agent_id",
+        "files",
+        "contract"
+      ],
+      "title": "ChangeSet",
+      "type": "object"
+    },
+    "Conflict": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "file",
+            "contract"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "workstream_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Workstream Ids",
+          "type": "array"
+        },
+        "explanation": {
+          "title": "Explanation",
+          "type": "string"
+        },
+        "conflicting_field": {
+          "title": "Conflicting Field",
+          "type": "string"
+        },
+        "decision_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Decision Id"
+        },
+        "recommendation": {
+          "title": "Recommendation",
+          "type": "string"
+        },
+        "status": {
+          "default": "open",
+          "enum": [
+            "open",
+            "resolved"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "type",
+        "workstream_ids",
+        "explanation",
+        "conflicting_field",
+        "recommendation"
+      ],
+      "title": "Conflict",
+      "type": "object"
+    },
+    "Decision": {
+      "properties": {
+        "decision_id": {
+          "title": "Decision Id",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "content": {
+          "title": "Content",
+          "type": "string"
+        },
+        "affected_component": {
+          "title": "Affected Component",
+          "type": "string"
+        },
+        "created_at": {
+          "title": "Created At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "decision_id",
+        "title",
+        "content",
+        "affected_component",
+        "created_at"
+      ],
+      "title": "Decision",
+      "type": "object"
+    },
+    "DemoAgent": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "role": {
+          "title": "Role",
+          "type": "string"
+        },
+        "allowed_paths": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Allowed Paths",
+          "type": "array"
+        },
+        "ans_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Ans Name"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "role",
+        "allowed_paths"
+      ],
+      "title": "DemoAgent",
+      "type": "object"
+    },
+    "Event": {
+      "properties": {
+        "event_id": {
+          "title": "Event Id",
+          "type": "string"
+        },
+        "objective_id": {
+          "title": "Objective Id",
+          "type": "string"
+        },
+        "workstream_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Workstream Id"
+        },
+        "agent_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Agent Id"
+        },
+        "event_type": {
+          "title": "Event Type",
+          "type": "string"
+        },
+        "payload": {
+          "additionalProperties": true,
+          "title": "Payload",
+          "type": "object"
+        },
+        "timestamp": {
+          "title": "Timestamp",
+          "type": "string"
+        }
+      },
+      "required": [
+        "event_id",
+        "objective_id",
+        "event_type",
+        "timestamp"
+      ],
+      "title": "Event",
+      "type": "object"
+    },
+    "IntentionContract": {
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "request_fields": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Request Fields",
+          "type": "array"
+        },
+        "response_fields": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Response Fields",
+          "type": "array"
+        }
+      },
+      "required": [
+        "name"
+      ],
+      "title": "IntentionContract",
+      "type": "object"
+    },
+    "IntentionDocument": {
+      "properties": {
+        "agent_id": {
+          "title": "Agent Id",
+          "type": "string"
+        },
+        "objective_id": {
+          "title": "Objective Id",
+          "type": "string"
+        },
+        "workstream_id": {
+          "title": "Workstream Id",
+          "type": "string"
+        },
+        "summary": {
+          "title": "Summary",
+          "type": "string"
+        },
+        "planned_files": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Planned Files",
+          "type": "array"
+        },
+        "planned_symbols": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Planned Symbols",
+          "type": "array"
+        },
+        "contracts_provided": {
+          "items": {
+            "$ref": "#/$defs/IntentionContract"
+          },
+          "title": "Contracts Provided",
+          "type": "array"
+        },
+        "contracts_consumed": {
+          "items": {
+            "$ref": "#/$defs/IntentionContract"
+          },
+          "title": "Contracts Consumed",
+          "type": "array"
+        },
+        "database_changes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Database Changes",
+          "type": "array"
+        },
+        "dependencies": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Dependencies",
+          "type": "array"
+        },
+        "assumptions": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Assumptions",
+          "type": "array"
+        },
+        "risk_level": {
+          "enum": [
+            "low",
+            "medium",
+            "high"
+          ],
+          "title": "Risk Level",
+          "type": "string"
+        },
+        "version": {
+          "default": 1,
+          "title": "Version",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "agent_id",
+        "objective_id",
+        "workstream_id",
+        "summary",
+        "risk_level"
+      ],
+      "title": "IntentionDocument",
+      "type": "object"
+    },
+    "Objective": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "description": {
+          "title": "Description",
+          "type": "string"
+        },
+        "acceptance_criteria": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Acceptance Criteria",
+          "type": "array"
+        },
+        "status": {
+          "default": "active",
+          "enum": [
+            "active",
+            "complete"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "title",
+        "description",
+        "acceptance_criteria"
+      ],
+      "title": "Objective",
+      "type": "object"
+    },
+    "OrchestrationChangeSet": {
+      "properties": {
+        "workstream_id": {
+          "title": "Workstream Id",
+          "type": "string"
+        },
+        "agent_id": {
+          "title": "Agent Id",
+          "type": "string"
+        },
+        "intention_version": {
+          "title": "Intention Version",
+          "type": "integer"
+        },
+        "branch": {
+          "title": "Branch",
+          "type": "string"
+        },
+        "commit_sha": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Commit Sha"
+        },
+        "changed_files": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Changed Files",
+          "type": "array"
+        },
+        "changed_symbols": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Changed Symbols",
+          "type": "array"
+        },
+        "contracts_provided": {
+          "items": {
+            "$ref": "#/$defs/IntentionContract"
+          },
+          "title": "Contracts Provided",
+          "type": "array"
+        },
+        "contracts_consumed": {
+          "items": {
+            "$ref": "#/$defs/IntentionContract"
+          },
+          "title": "Contracts Consumed",
+          "type": "array"
+        },
+        "database_changes": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Database Changes",
+          "type": "array"
+        },
+        "tests": {
+          "$ref": "#/$defs/TestSummary"
+        }
+      },
+      "required": [
+        "workstream_id",
+        "agent_id",
+        "intention_version",
+        "branch",
+        "changed_files",
+        "tests"
+      ],
+      "title": "OrchestrationChangeSet",
+      "type": "object"
+    },
+    "OrchestrationConflict": {
+      "properties": {
+        "conflict_id": {
+          "title": "Conflict Id",
+          "type": "string"
+        },
+        "objective_id": {
+          "title": "Objective Id",
+          "type": "string"
+        },
+        "type": {
+          "enum": [
+            "FILE_CONFLICT",
+            "SYMBOL_CONFLICT",
+            "CONTRACT_CONFLICT",
+            "DEPENDENCY_CONFLICT",
+            "PERMISSION_CONFLICT",
+            "INTENT_DRIFT"
+          ],
+          "title": "Type",
+          "type": "string"
+        },
+        "severity": {
+          "enum": [
+            "LOW",
+            "MEDIUM",
+            "HIGH"
+          ],
+          "title": "Severity",
+          "type": "string"
+        },
+        "workstream_ids": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Workstream Ids",
+          "type": "array"
+        },
+        "evidence": {
+          "additionalProperties": true,
+          "title": "Evidence",
+          "type": "object"
+        },
+        "related_decision_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Related Decision Id"
+        },
+        "status": {
+          "default": "OPEN",
+          "enum": [
+            "OPEN",
+            "RESOLUTION_PROPOSED",
+            "AWAITING_APPROVAL",
+            "RESOLVED",
+            "REJECTED"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "recommended_action": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Recommended Action"
+        },
+        "approved_by": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Approved By"
+        },
+        "resolution": {
+          "anyOf": [
+            {
+              "additionalProperties": true,
+              "type": "object"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Resolution"
+        }
+      },
+      "required": [
+        "conflict_id",
+        "objective_id",
+        "type",
+        "severity",
+        "workstream_ids"
+      ],
+      "title": "OrchestrationConflict",
+      "type": "object"
+    },
+    "OrchestrationEvent": {
+      "properties": {
+        "event_id": {
+          "title": "Event Id",
+          "type": "string"
+        },
+        "event_type": {
+          "title": "Event Type",
+          "type": "string"
+        },
+        "timestamp": {
+          "title": "Timestamp",
+          "type": "string"
+        },
+        "agent_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Agent Id"
+        },
+        "workstream_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Workstream Id"
+        },
+        "payload": {
+          "additionalProperties": true,
+          "title": "Payload",
+          "type": "object"
+        }
+      },
+      "required": [
+        "event_id",
+        "event_type",
+        "timestamp"
+      ],
+      "title": "OrchestrationEvent",
+      "type": "object"
+    },
+    "OrchestrationState": {
+      "properties": {
+        "objective": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Objective"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "agents": {
+          "items": {
+            "$ref": "#/$defs/DemoAgent"
+          },
+          "title": "Agents",
+          "type": "array"
+        },
+        "workstreams": {
+          "items": {
+            "$ref": "#/$defs/OrchestrationWorkstream"
+          },
+          "title": "Workstreams",
+          "type": "array"
+        },
+        "conflicts": {
+          "items": {
+            "$ref": "#/$defs/OrchestrationConflict"
+          },
+          "title": "Conflicts",
+          "type": "array"
+        },
+        "events": {
+          "items": {
+            "$ref": "#/$defs/OrchestrationEvent"
+          },
+          "title": "Events",
+          "type": "array"
+        }
+      },
+      "title": "OrchestrationState",
+      "type": "object"
+    },
+    "OrchestrationWorkstream": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "agent_id": {
+          "title": "Agent Id",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "allowed_paths": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Allowed Paths",
+          "type": "array"
+        },
+        "state": {
+          "default": "PENDING",
+          "enum": [
+            "PENDING",
+            "PLANNING",
+            "INTENT_SUBMITTED",
+            "VALIDATING",
+            "BLOCKED",
+            "APPROVED",
+            "EXECUTING",
+            "CHANGESET_SUBMITTED",
+            "CONVERGING",
+            "COMPLETE",
+            "FAILED"
+          ],
+          "title": "State",
+          "type": "string"
+        },
+        "intention": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/IntentionDocument"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "changeset": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/OrchestrationChangeSet"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "block_reason": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Block Reason"
+        }
+      },
+      "required": [
+        "id",
+        "agent_id",
+        "title",
+        "allowed_paths"
+      ],
+      "title": "OrchestrationWorkstream",
+      "type": "object"
+    },
+    "TestResult": {
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "passed",
+            "failed",
+            "not_run"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "source": {
+          "default": "agent_reported",
+          "enum": [
+            "agent_reported",
+            "synapse_executed"
+          ],
+          "title": "Source",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "status"
+      ],
+      "title": "TestResult",
+      "type": "object"
+    },
+    "TestSummary": {
+      "properties": {
+        "passed": {
+          "minimum": 0,
+          "title": "Passed",
+          "type": "integer"
+        },
+        "failed": {
+          "minimum": 0,
+          "title": "Failed",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "passed",
+        "failed"
+      ],
+      "title": "TestSummary",
+      "type": "object"
+    },
+    "VerificationResult": {
+      "properties": {
+        "agent_id": {
+          "title": "Agent Id",
+          "type": "string"
+        },
+        "verified": {
+          "title": "Verified",
+          "type": "boolean"
+        },
+        "source": {
+          "enum": [
+            "ans",
+            "mock"
+          ],
+          "title": "Source",
+          "type": "string"
+        },
+        "evidence": {
+          "title": "Evidence",
+          "type": "string"
+        },
+        "checked_at": {
+          "title": "Checked At",
+          "type": "string"
+        },
+        "tier": {
+          "default": "none",
+          "enum": [
+            "badge",
+            "scitt",
+            "none"
+          ],
+          "title": "Tier",
+          "type": "string"
+        },
+        "badge_status": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Badge Status"
+        }
+      },
+      "required": [
+        "agent_id",
+        "verified",
+        "source",
+        "evidence",
+        "checked_at"
+      ],
+      "title": "VerificationResult",
+      "type": "object"
+    },
+    "WorkspaceState": {
+      "properties": {
+        "phase": {
+          "const": "foundation",
+          "default": "foundation",
+          "title": "Phase",
+          "type": "string"
+        },
+        "objective": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Objective"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "workstreams": {
+          "items": {
+            "$ref": "#/$defs/Workstream"
+          },
+          "title": "Workstreams",
+          "type": "array"
+        },
+        "agents": {
+          "items": {
+            "$ref": "#/$defs/AgentPrincipal"
+          },
+          "title": "Agents",
+          "type": "array"
+        },
+        "conflicts": {
+          "items": {
+            "$ref": "#/$defs/Conflict"
+          },
+          "title": "Conflicts",
+          "type": "array"
+        },
+        "decisions": {
+          "items": {
+            "$ref": "#/$defs/Decision"
+          },
+          "title": "Decisions",
+          "type": "array"
+        },
+        "events": {
+          "items": {
+            "$ref": "#/$defs/Event"
+          },
+          "title": "Events",
+          "type": "array"
+        }
+      },
+      "title": "WorkspaceState",
+      "type": "object"
+    },
+    "Workstream": {
+      "properties": {
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "objective_id": {
+          "title": "Objective Id",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        },
+        "agent_id": {
+          "title": "Agent Id",
+          "type": "string"
+        },
+        "owned_paths": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Owned Paths",
+          "type": "array"
+        },
+        "depends_on": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Depends On",
+          "type": "array"
+        },
+        "contract": {
+          "$ref": "#/$defs/ApiContract"
+        },
+        "status": {
+          "default": "pending",
+          "enum": [
+            "pending",
+            "active",
+            "blocked",
+            "complete"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "latest_changeset": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/ChangeSet"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "id",
+        "objective_id",
+        "title",
+        "agent_id",
+        "owned_paths",
+        "contract"
+      ],
+      "title": "Workstream",
+      "type": "object"
+    },
+    "WriteReceipt": {
+      "properties": {
+        "event_id": {
+          "title": "Event Id",
+          "type": "string"
+        },
+        "source": {
+          "enum": [
+            "databricks",
+            "cache"
+          ],
+          "title": "Source",
+          "type": "string"
+        },
+        "status": {
+          "enum": [
+            "written",
+            "pending",
+            "failed"
+          ],
+          "title": "Status",
+          "type": "string"
+        }
+      },
+      "required": [
+        "event_id",
+        "source",
+        "status"
+      ],
+      "title": "WriteReceipt",
+      "type": "object"
+    }
+  },
+  "anyOf": [
+    {
+      "$ref": "#/$defs/WorkspaceState"
+    },
+    {
+      "$ref": "#/$defs/OrchestrationState"
+    },
+    {
+      "$ref": "#/$defs/VerificationResult"
+    },
+    {
+      "$ref": "#/$defs/WriteReceipt"
+    }
+  ]
+}

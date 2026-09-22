@@ -1,0 +1,2645 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Synapse API",
+    "version": "0.6.0"
+  },
+  "paths": {
+    "/api/health": {
+      "get": {
+        "summary": "Health",
+        "operationId": "health_api_health_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Health"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/state": {
+      "get": {
+        "summary": "State",
+        "operationId": "state_api_state_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceState"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/agents/{agent_id}/join": {
+      "post": {
+        "summary": "Join",
+        "operationId": "join_api_agents__agent_id__join_post",
+        "parameters": [
+          {
+            "name": "agent_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Agent Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceState"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workstreams/{ws_id}/claim": {
+      "post": {
+        "summary": "Claim",
+        "operationId": "claim_api_workstreams__ws_id__claim_post",
+        "parameters": [
+          {
+            "name": "ws_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Ws Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ClaimRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceState"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workstreams/{ws_id}/declare": {
+      "post": {
+        "summary": "Declare",
+        "operationId": "declare_api_workstreams__ws_id__declare_post",
+        "parameters": [
+          {
+            "name": "ws_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Ws Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/DeclareRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceState"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workstreams/{ws_id}/scope": {
+      "post": {
+        "summary": "Reassign Scope",
+        "operationId": "reassign_scope_api_workstreams__ws_id__scope_post",
+        "parameters": [
+          {
+            "name": "ws_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Ws Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ScopeRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceState"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/workstreams/{ws_id}/submit": {
+      "post": {
+        "summary": "Submit",
+        "operationId": "submit_api_workstreams__ws_id__submit_post",
+        "parameters": [
+          {
+            "name": "ws_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Ws Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ChangeSet"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceState"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/reset": {
+      "post": {
+        "summary": "Reset",
+        "description": "Replace the workspace with the seeded fixture.\n\nDestructive, so it is behind the shared demo secret: on a public\ndeployment an open reset lets anyone wipe the demo mid-presentation.",
+        "operationId": "reset_api_reset_post",
+        "parameters": [
+          {
+            "name": "x-demo-token",
+            "in": "header",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "X-Demo-Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceState"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/traces": {
+      "get": {
+        "tags": [
+          "tracing"
+        ],
+        "summary": "Recent",
+        "operationId": "recent_api_traces_get",
+        "parameters": [
+          {
+            "name": "limit",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "maximum": 200,
+              "minimum": 1,
+              "default": 100,
+              "title": "Limit"
+            }
+          },
+          {
+            "name": "run_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "null"
+                }
+              ],
+              "title": "Run Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/TraceEvent"
+                  },
+                  "title": "Response Recent Api Traces Get"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/objectives": {
+      "post": {
+        "tags": [
+          "orchestration"
+        ],
+        "summary": "Create Objective",
+        "operationId": "create_objective_api_objectives_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/ObjectiveRequest"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Body"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrchestrationState"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/objectives/{objective_id}/status": {
+      "get": {
+        "tags": [
+          "orchestration"
+        ],
+        "summary": "Status",
+        "operationId": "status_api_objectives__objective_id__status_get",
+        "parameters": [
+          {
+            "name": "objective_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Objective Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrchestrationState"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/objectives/{objective_id}/orchestrate": {
+      "post": {
+        "tags": [
+          "orchestration"
+        ],
+        "summary": "Orchestrate",
+        "operationId": "orchestrate_api_objectives__objective_id__orchestrate_post",
+        "parameters": [
+          {
+            "name": "objective_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Objective Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrchestrationState"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/agents/{agent_id}/plan": {
+      "post": {
+        "tags": [
+          "orchestration"
+        ],
+        "summary": "Plan",
+        "operationId": "plan_api_agents__agent_id__plan_post",
+        "parameters": [
+          {
+            "name": "agent_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Agent Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "anyOf": [
+                  {
+                    "$ref": "#/components/schemas/IntentionDocument"
+                  },
+                  {
+                    "type": "null"
+                  }
+                ],
+                "title": "Intention"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrchestrationState"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/intentions/validate": {
+      "post": {
+        "tags": [
+          "orchestration"
+        ],
+        "summary": "Validate Intention",
+        "operationId": "validate_intention_api_intentions_validate_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/IntentionDocument"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrchestrationState"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/conflicts/detect": {
+      "post": {
+        "tags": [
+          "orchestration"
+        ],
+        "summary": "Detect Conflicts",
+        "operationId": "detect_conflicts_api_conflicts_detect_post",
+        "parameters": [
+          {
+            "name": "objective_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Objective Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrchestrationState"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/conflicts/{conflict_id}/resolve": {
+      "post": {
+        "tags": [
+          "orchestration"
+        ],
+        "summary": "Resolve Conflict",
+        "operationId": "resolve_conflict_api_conflicts__conflict_id__resolve_post",
+        "parameters": [
+          {
+            "name": "conflict_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Conflict Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResolutionProposal"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/conflicts/{conflict_id}/approve": {
+      "post": {
+        "tags": [
+          "orchestration"
+        ],
+        "summary": "Approve Conflict",
+        "operationId": "approve_conflict_api_conflicts__conflict_id__approve_post",
+        "parameters": [
+          {
+            "name": "conflict_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Conflict Id"
+            }
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ResolutionApproval"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrchestrationState"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/agents/{agent_id}/execute": {
+      "post": {
+        "tags": [
+          "orchestration"
+        ],
+        "summary": "Execute",
+        "operationId": "execute_api_agents__agent_id__execute_post",
+        "parameters": [
+          {
+            "name": "agent_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Agent Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrchestrationState"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/changesets/submit": {
+      "post": {
+        "tags": [
+          "orchestration"
+        ],
+        "summary": "Submit Changeset",
+        "operationId": "submit_changeset_api_changesets_submit_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/OrchestrationChangeSet"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrchestrationState"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/objectives/{objective_id}/converge": {
+      "post": {
+        "tags": [
+          "orchestration"
+        ],
+        "summary": "Converge",
+        "operationId": "converge_api_objectives__objective_id__converge_post",
+        "parameters": [
+          {
+            "name": "objective_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Objective Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/OrchestrationState"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/live/config": {
+      "get": {
+        "tags": [
+          "live-agents"
+        ],
+        "summary": "Config",
+        "operationId": "config_api_live_config_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/live/runs": {
+      "get": {
+        "tags": [
+          "live-agents"
+        ],
+        "summary": "Recent Runs",
+        "operationId": "recent_runs_api_live_runs_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "tags": [
+          "live-agents"
+        ],
+        "summary": "Start",
+        "operationId": "start_api_live_runs_post",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LiveStartRequest"
+              }
+            }
+          },
+          "required": true
+        },
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/LiveRunResponse"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/live/runs/{run_id}": {
+      "get": {
+        "tags": [
+          "live-agents"
+        ],
+        "summary": "Snapshot",
+        "operationId": "snapshot_api_live_runs__run_id__get",
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Run Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/live/runs/{run_id}/preview": {
+      "get": {
+        "tags": [
+          "live-agents"
+        ],
+        "summary": "Preview",
+        "operationId": "preview_api_live_runs__run_id__preview_get",
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Run Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "text/html": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/live/runs/{run_id}/events": {
+      "get": {
+        "tags": [
+          "live-agents"
+        ],
+        "summary": "Events",
+        "operationId": "events_api_live_runs__run_id__events_get",
+        "parameters": [
+          {
+            "name": "run_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Run Id"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/demo/run": {
+      "post": {
+        "tags": [
+          "demo"
+        ],
+        "summary": "Run",
+        "operationId": "run_api_demo_run_post",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DemoRunResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/.well-known/acme-challenge/{token}": {
+      "get": {
+        "tags": [
+          "acme"
+        ],
+        "summary": "Respond",
+        "operationId": "respond__well_known_acme_challenge__token__get",
+        "parameters": [
+          {
+            "name": "token",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "title": "Token"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "422": {
+            "description": "Validation Error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HTTPValidationError"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api": {
+      "get": {
+        "tags": [
+          "web"
+        ],
+        "summary": "Service Descriptor",
+        "description": "Self-description at the endpoint URL ANS registration seals.\n\nRegistration declares https://<host>/api as the agent endpoint. Sealing a\nURL that 404s would publish a claim the service does not honour, so this\nanswers there and points at the agent card for the rest.",
+        "operationId": "service_descriptor_api_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    },
+    "/.well-known/agent-card.json": {
+      "get": {
+        "tags": [
+          "web"
+        ],
+        "summary": "Agent Card",
+        "operationId": "agent_card__well_known_agent_card_json_get",
+        "responses": {
+          "200": {
+            "description": "Successful Response",
+            "content": {
+              "application/json": {
+                "schema": {}
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AgentPrincipal": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "ans_name": {
+            "type": "string",
+            "title": "Ans Name"
+          },
+          "role": {
+            "type": "string",
+            "title": "Role"
+          },
+          "verified": {
+            "type": "boolean",
+            "title": "Verified",
+            "default": false
+          },
+          "ans_agent_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ans Agent Id"
+          },
+          "identity_cert_fingerprint": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Identity Cert Fingerprint"
+          },
+          "ans_status": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ans Status"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "ans_name",
+          "role"
+        ],
+        "title": "AgentPrincipal"
+      },
+      "ApiContract": {
+        "properties": {
+          "method": {
+            "type": "string",
+            "enum": [
+              "GET",
+              "POST",
+              "PUT",
+              "PATCH",
+              "DELETE"
+            ],
+            "title": "Method"
+          },
+          "path": {
+            "type": "string",
+            "title": "Path"
+          },
+          "role": {
+            "type": "string",
+            "enum": [
+              "provides",
+              "consumes"
+            ],
+            "title": "Role"
+          },
+          "request_fields": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object",
+            "title": "Request Fields"
+          },
+          "response_fields": {
+            "additionalProperties": {
+              "type": "string"
+            },
+            "type": "object",
+            "title": "Response Fields"
+          }
+        },
+        "type": "object",
+        "required": [
+          "method",
+          "path",
+          "role"
+        ],
+        "title": "ApiContract"
+      },
+      "ChangeSet": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "workstream_id": {
+            "type": "string",
+            "title": "Workstream Id"
+          },
+          "agent_id": {
+            "type": "string",
+            "title": "Agent Id"
+          },
+          "commit_sha": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Commit Sha"
+          },
+          "files": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Files"
+          },
+          "contract": {
+            "$ref": "#/components/schemas/ApiContract"
+          },
+          "tests": {
+            "items": {
+              "$ref": "#/components/schemas/TestResult"
+            },
+            "type": "array",
+            "title": "Tests"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "workstream_id",
+          "agent_id",
+          "files",
+          "contract"
+        ],
+        "title": "ChangeSet"
+      },
+      "ClaimRequest": {
+        "properties": {
+          "agent_id": {
+            "type": "string",
+            "title": "Agent Id"
+          }
+        },
+        "type": "object",
+        "required": [
+          "agent_id"
+        ],
+        "title": "ClaimRequest"
+      },
+      "Conflict": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "file",
+              "contract"
+            ],
+            "title": "Type"
+          },
+          "workstream_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Workstream Ids"
+          },
+          "explanation": {
+            "type": "string",
+            "title": "Explanation"
+          },
+          "conflicting_field": {
+            "type": "string",
+            "title": "Conflicting Field"
+          },
+          "decision_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Decision Id"
+          },
+          "recommendation": {
+            "type": "string",
+            "title": "Recommendation"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "open",
+              "resolved"
+            ],
+            "title": "Status",
+            "default": "open"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "type",
+          "workstream_ids",
+          "explanation",
+          "conflicting_field",
+          "recommendation"
+        ],
+        "title": "Conflict"
+      },
+      "Decision": {
+        "properties": {
+          "decision_id": {
+            "type": "string",
+            "title": "Decision Id"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "content": {
+            "type": "string",
+            "title": "Content"
+          },
+          "affected_component": {
+            "type": "string",
+            "title": "Affected Component"
+          },
+          "created_at": {
+            "type": "string",
+            "title": "Created At"
+          }
+        },
+        "type": "object",
+        "required": [
+          "decision_id",
+          "title",
+          "content",
+          "affected_component",
+          "created_at"
+        ],
+        "title": "Decision"
+      },
+      "DeclareRequest": {
+        "properties": {
+          "agent_id": {
+            "type": "string",
+            "title": "Agent Id"
+          },
+          "contract": {
+            "$ref": "#/components/schemas/ApiContract"
+          }
+        },
+        "type": "object",
+        "required": [
+          "agent_id",
+          "contract"
+        ],
+        "title": "DeclareRequest"
+      },
+      "DemoAgent": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "role": {
+            "type": "string",
+            "title": "Role"
+          },
+          "allowed_paths": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Allowed Paths"
+          },
+          "ans_name": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Ans Name"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "name",
+          "role",
+          "allowed_paths"
+        ],
+        "title": "DemoAgent"
+      },
+      "DemoRunResponse": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "title": "Status"
+          },
+          "agents": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Agents"
+          },
+          "detail": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "required": [
+          "status",
+          "agents"
+        ],
+        "title": "DemoRunResponse"
+      },
+      "Event": {
+        "properties": {
+          "event_id": {
+            "type": "string",
+            "title": "Event Id"
+          },
+          "objective_id": {
+            "type": "string",
+            "title": "Objective Id"
+          },
+          "workstream_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Workstream Id"
+          },
+          "agent_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Agent Id"
+          },
+          "event_type": {
+            "type": "string",
+            "title": "Event Type"
+          },
+          "payload": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Payload"
+          },
+          "timestamp": {
+            "type": "string",
+            "title": "Timestamp"
+          }
+        },
+        "type": "object",
+        "required": [
+          "event_id",
+          "objective_id",
+          "event_type",
+          "timestamp"
+        ],
+        "title": "Event"
+      },
+      "HTTPValidationError": {
+        "properties": {
+          "detail": {
+            "items": {
+              "$ref": "#/components/schemas/ValidationError"
+            },
+            "type": "array",
+            "title": "Detail"
+          }
+        },
+        "type": "object",
+        "title": "HTTPValidationError"
+      },
+      "Health": {
+        "properties": {
+          "status": {
+            "type": "string",
+            "const": "ok",
+            "title": "Status",
+            "default": "ok"
+          },
+          "identity_mode": {
+            "type": "string",
+            "title": "Identity Mode"
+          },
+          "memory_mode": {
+            "type": "string",
+            "title": "Memory Mode"
+          },
+          "trace_mode": {
+            "type": "string",
+            "title": "Trace Mode",
+            "default": "cache"
+          },
+          "live_integrations": {
+            "type": "boolean",
+            "title": "Live Integrations",
+            "default": false
+          },
+          "identity_tier": {
+            "type": "string",
+            "enum": [
+              "badge",
+              "scitt",
+              "none"
+            ],
+            "title": "Identity Tier",
+            "default": "none"
+          },
+          "dpop_required": {
+            "type": "boolean",
+            "title": "Dpop Required",
+            "default": false
+          },
+          "reset_requires_token": {
+            "type": "boolean",
+            "title": "Reset Requires Token",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "identity_mode",
+          "memory_mode"
+        ],
+        "title": "Health"
+      },
+      "IntentionContract": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "request_fields": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Request Fields"
+          },
+          "response_fields": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Response Fields"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name"
+        ],
+        "title": "IntentionContract"
+      },
+      "IntentionDocument": {
+        "properties": {
+          "agent_id": {
+            "type": "string",
+            "title": "Agent Id"
+          },
+          "objective_id": {
+            "type": "string",
+            "title": "Objective Id"
+          },
+          "workstream_id": {
+            "type": "string",
+            "title": "Workstream Id"
+          },
+          "summary": {
+            "type": "string",
+            "title": "Summary"
+          },
+          "planned_files": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Planned Files"
+          },
+          "planned_symbols": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Planned Symbols"
+          },
+          "contracts_provided": {
+            "items": {
+              "$ref": "#/components/schemas/IntentionContract"
+            },
+            "type": "array",
+            "title": "Contracts Provided"
+          },
+          "contracts_consumed": {
+            "items": {
+              "$ref": "#/components/schemas/IntentionContract"
+            },
+            "type": "array",
+            "title": "Contracts Consumed"
+          },
+          "database_changes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Database Changes"
+          },
+          "dependencies": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Dependencies"
+          },
+          "assumptions": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Assumptions"
+          },
+          "risk_level": {
+            "type": "string",
+            "enum": [
+              "low",
+              "medium",
+              "high"
+            ],
+            "title": "Risk Level"
+          },
+          "version": {
+            "type": "integer",
+            "title": "Version",
+            "default": 1
+          }
+        },
+        "type": "object",
+        "required": [
+          "agent_id",
+          "objective_id",
+          "workstream_id",
+          "summary",
+          "risk_level"
+        ],
+        "title": "IntentionDocument"
+      },
+      "LiveRunResponse": {
+        "properties": {
+          "run_id": {
+            "type": "string",
+            "title": "Run Id"
+          },
+          "status": {
+            "type": "string",
+            "title": "Status"
+          }
+        },
+        "type": "object",
+        "required": [
+          "run_id",
+          "status"
+        ],
+        "title": "LiveRunResponse"
+      },
+      "LiveStartRequest": {
+        "properties": {
+          "objective": {
+            "type": "string",
+            "maxLength": 2000,
+            "minLength": 1,
+            "title": "Objective"
+          }
+        },
+        "type": "object",
+        "required": [
+          "objective"
+        ],
+        "title": "LiveStartRequest"
+      },
+      "Objective": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description"
+          },
+          "acceptance_criteria": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Acceptance Criteria"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "active",
+              "complete"
+            ],
+            "title": "Status",
+            "default": "active"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "title",
+          "description",
+          "acceptance_criteria"
+        ],
+        "title": "Objective"
+      },
+      "ObjectiveRequest": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id",
+            "default": "objective-oauth"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title",
+            "default": "Add organization-level OAuth login"
+          },
+          "description": {
+            "type": "string",
+            "title": "Description",
+            "default": "Coordinate three agents before overlapping changes are written."
+          },
+          "acceptance_criteria": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Acceptance Criteria"
+          }
+        },
+        "type": "object",
+        "title": "ObjectiveRequest"
+      },
+      "OrchestrationChangeSet": {
+        "properties": {
+          "workstream_id": {
+            "type": "string",
+            "title": "Workstream Id"
+          },
+          "agent_id": {
+            "type": "string",
+            "title": "Agent Id"
+          },
+          "intention_version": {
+            "type": "integer",
+            "title": "Intention Version"
+          },
+          "branch": {
+            "type": "string",
+            "title": "Branch"
+          },
+          "commit_sha": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Commit Sha"
+          },
+          "changed_files": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Changed Files"
+          },
+          "changed_symbols": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Changed Symbols"
+          },
+          "contracts_provided": {
+            "items": {
+              "$ref": "#/components/schemas/IntentionContract"
+            },
+            "type": "array",
+            "title": "Contracts Provided"
+          },
+          "contracts_consumed": {
+            "items": {
+              "$ref": "#/components/schemas/IntentionContract"
+            },
+            "type": "array",
+            "title": "Contracts Consumed"
+          },
+          "database_changes": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Database Changes"
+          },
+          "tests": {
+            "$ref": "#/components/schemas/TestSummary"
+          }
+        },
+        "type": "object",
+        "required": [
+          "workstream_id",
+          "agent_id",
+          "intention_version",
+          "branch",
+          "changed_files",
+          "tests"
+        ],
+        "title": "OrchestrationChangeSet"
+      },
+      "OrchestrationConflict": {
+        "properties": {
+          "conflict_id": {
+            "type": "string",
+            "title": "Conflict Id"
+          },
+          "objective_id": {
+            "type": "string",
+            "title": "Objective Id"
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "FILE_CONFLICT",
+              "SYMBOL_CONFLICT",
+              "CONTRACT_CONFLICT",
+              "DEPENDENCY_CONFLICT",
+              "PERMISSION_CONFLICT",
+              "INTENT_DRIFT"
+            ],
+            "title": "Type"
+          },
+          "severity": {
+            "type": "string",
+            "enum": [
+              "LOW",
+              "MEDIUM",
+              "HIGH"
+            ],
+            "title": "Severity"
+          },
+          "workstream_ids": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Workstream Ids"
+          },
+          "evidence": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Evidence"
+          },
+          "related_decision_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Related Decision Id"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "OPEN",
+              "RESOLUTION_PROPOSED",
+              "AWAITING_APPROVAL",
+              "RESOLVED",
+              "REJECTED"
+            ],
+            "title": "Status",
+            "default": "OPEN"
+          },
+          "recommended_action": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Recommended Action"
+          },
+          "approved_by": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Approved By"
+          },
+          "resolution": {
+            "anyOf": [
+              {
+                "additionalProperties": true,
+                "type": "object"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Resolution"
+          }
+        },
+        "type": "object",
+        "required": [
+          "conflict_id",
+          "objective_id",
+          "type",
+          "severity",
+          "workstream_ids"
+        ],
+        "title": "OrchestrationConflict"
+      },
+      "OrchestrationEvent": {
+        "properties": {
+          "event_id": {
+            "type": "string",
+            "title": "Event Id"
+          },
+          "event_type": {
+            "type": "string",
+            "title": "Event Type"
+          },
+          "timestamp": {
+            "type": "string",
+            "title": "Timestamp"
+          },
+          "agent_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Agent Id"
+          },
+          "workstream_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Workstream Id"
+          },
+          "payload": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Payload"
+          }
+        },
+        "type": "object",
+        "required": [
+          "event_id",
+          "event_type",
+          "timestamp"
+        ],
+        "title": "OrchestrationEvent"
+      },
+      "OrchestrationState": {
+        "properties": {
+          "objective": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Objective"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "agents": {
+            "items": {
+              "$ref": "#/components/schemas/DemoAgent"
+            },
+            "type": "array",
+            "title": "Agents"
+          },
+          "workstreams": {
+            "items": {
+              "$ref": "#/components/schemas/OrchestrationWorkstream"
+            },
+            "type": "array",
+            "title": "Workstreams"
+          },
+          "conflicts": {
+            "items": {
+              "$ref": "#/components/schemas/OrchestrationConflict"
+            },
+            "type": "array",
+            "title": "Conflicts"
+          },
+          "events": {
+            "items": {
+              "$ref": "#/components/schemas/OrchestrationEvent"
+            },
+            "type": "array",
+            "title": "Events"
+          }
+        },
+        "type": "object",
+        "title": "OrchestrationState"
+      },
+      "OrchestrationWorkstream": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "agent_id": {
+            "type": "string",
+            "title": "Agent Id"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "allowed_paths": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Allowed Paths"
+          },
+          "state": {
+            "type": "string",
+            "enum": [
+              "PENDING",
+              "PLANNING",
+              "INTENT_SUBMITTED",
+              "VALIDATING",
+              "BLOCKED",
+              "APPROVED",
+              "EXECUTING",
+              "CHANGESET_SUBMITTED",
+              "CONVERGING",
+              "COMPLETE",
+              "FAILED"
+            ],
+            "title": "State",
+            "default": "PENDING"
+          },
+          "intention": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/IntentionDocument"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "changeset": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/OrchestrationChangeSet"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "block_reason": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Block Reason"
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "agent_id",
+          "title",
+          "allowed_paths"
+        ],
+        "title": "OrchestrationWorkstream"
+      },
+      "ResolutionApproval": {
+        "properties": {
+          "approved_by": {
+            "type": "string",
+            "title": "Approved By"
+          }
+        },
+        "type": "object",
+        "required": [
+          "approved_by"
+        ],
+        "title": "ResolutionApproval"
+      },
+      "ResolutionProposal": {
+        "properties": {
+          "recommended_action": {
+            "type": "string",
+            "enum": [
+              "UPDATE_CONTRACT",
+              "REASSIGN_FILE_OWNER",
+              "ADD_DEPENDENCY",
+              "SERIALIZE_WORKSTREAMS",
+              "SPLIT_SHARED_WORK",
+              "REQUEST_SCOPE_EXPANSION",
+              "REQUEST_HUMAN_REVIEW"
+            ],
+            "title": "Recommended Action"
+          },
+          "affected_workstreams": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Affected Workstreams"
+          },
+          "reasoning": {
+            "type": "string",
+            "title": "Reasoning"
+          },
+          "proposed_changes": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Proposed Changes"
+          },
+          "confidence": {
+            "type": "number",
+            "maximum": 1.0,
+            "minimum": 0.0,
+            "title": "Confidence"
+          },
+          "requires_human_approval": {
+            "type": "boolean",
+            "title": "Requires Human Approval",
+            "default": false
+          }
+        },
+        "type": "object",
+        "required": [
+          "recommended_action",
+          "affected_workstreams",
+          "reasoning",
+          "confidence"
+        ],
+        "title": "ResolutionProposal"
+      },
+      "ScopeRequest": {
+        "properties": {
+          "agent_id": {
+            "type": "string",
+            "title": "Agent Id"
+          },
+          "owned_paths": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Owned Paths"
+          }
+        },
+        "type": "object",
+        "required": [
+          "agent_id",
+          "owned_paths"
+        ],
+        "title": "ScopeRequest"
+      },
+      "TestResult": {
+        "properties": {
+          "name": {
+            "type": "string",
+            "title": "Name"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "passed",
+              "failed",
+              "not_run"
+            ],
+            "title": "Status"
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "agent_reported",
+              "synapse_executed"
+            ],
+            "title": "Source",
+            "default": "agent_reported"
+          }
+        },
+        "type": "object",
+        "required": [
+          "name",
+          "status"
+        ],
+        "title": "TestResult"
+      },
+      "TestSummary": {
+        "properties": {
+          "passed": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Passed"
+          },
+          "failed": {
+            "type": "integer",
+            "minimum": 0.0,
+            "title": "Failed"
+          }
+        },
+        "type": "object",
+        "required": [
+          "passed",
+          "failed"
+        ],
+        "title": "TestSummary"
+      },
+      "TraceEvent": {
+        "properties": {
+          "trace_id": {
+            "type": "string",
+            "title": "Trace Id"
+          },
+          "source": {
+            "type": "string",
+            "enum": [
+              "coordinator",
+              "live_agent"
+            ],
+            "title": "Source"
+          },
+          "event_type": {
+            "type": "string",
+            "title": "Event Type"
+          },
+          "timestamp": {
+            "type": "string",
+            "title": "Timestamp"
+          },
+          "run_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Run Id"
+          },
+          "objective_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Objective Id"
+          },
+          "workstream_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Workstream Id"
+          },
+          "agent_id": {
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "null"
+              }
+            ],
+            "title": "Agent Id"
+          },
+          "payload": {
+            "additionalProperties": true,
+            "type": "object",
+            "title": "Payload"
+          }
+        },
+        "type": "object",
+        "required": [
+          "trace_id",
+          "source",
+          "event_type",
+          "timestamp"
+        ],
+        "title": "TraceEvent",
+        "description": "Durable debugging record for coordinator and live-agent activity."
+      },
+      "ValidationError": {
+        "properties": {
+          "loc": {
+            "items": {
+              "anyOf": [
+                {
+                  "type": "string"
+                },
+                {
+                  "type": "integer"
+                }
+              ]
+            },
+            "type": "array",
+            "title": "Location"
+          },
+          "msg": {
+            "type": "string",
+            "title": "Message"
+          },
+          "type": {
+            "type": "string",
+            "title": "Error Type"
+          },
+          "input": {
+            "title": "Input"
+          },
+          "ctx": {
+            "type": "object",
+            "title": "Context"
+          }
+        },
+        "type": "object",
+        "required": [
+          "loc",
+          "msg",
+          "type"
+        ],
+        "title": "ValidationError"
+      },
+      "WorkspaceState": {
+        "properties": {
+          "phase": {
+            "type": "string",
+            "const": "foundation",
+            "title": "Phase",
+            "default": "foundation"
+          },
+          "objective": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/Objective"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          },
+          "workstreams": {
+            "items": {
+              "$ref": "#/components/schemas/Workstream"
+            },
+            "type": "array",
+            "title": "Workstreams"
+          },
+          "agents": {
+            "items": {
+              "$ref": "#/components/schemas/AgentPrincipal"
+            },
+            "type": "array",
+            "title": "Agents"
+          },
+          "conflicts": {
+            "items": {
+              "$ref": "#/components/schemas/Conflict"
+            },
+            "type": "array",
+            "title": "Conflicts"
+          },
+          "decisions": {
+            "items": {
+              "$ref": "#/components/schemas/Decision"
+            },
+            "type": "array",
+            "title": "Decisions"
+          },
+          "events": {
+            "items": {
+              "$ref": "#/components/schemas/Event"
+            },
+            "type": "array",
+            "title": "Events"
+          }
+        },
+        "type": "object",
+        "title": "WorkspaceState"
+      },
+      "Workstream": {
+        "properties": {
+          "id": {
+            "type": "string",
+            "title": "Id"
+          },
+          "objective_id": {
+            "type": "string",
+            "title": "Objective Id"
+          },
+          "title": {
+            "type": "string",
+            "title": "Title"
+          },
+          "agent_id": {
+            "type": "string",
+            "title": "Agent Id"
+          },
+          "owned_paths": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Owned Paths"
+          },
+          "depends_on": {
+            "items": {
+              "type": "string"
+            },
+            "type": "array",
+            "title": "Depends On"
+          },
+          "contract": {
+            "$ref": "#/components/schemas/ApiContract"
+          },
+          "status": {
+            "type": "string",
+            "enum": [
+              "pending",
+              "active",
+              "blocked",
+              "complete"
+            ],
+            "title": "Status",
+            "default": "pending"
+          },
+          "latest_changeset": {
+            "anyOf": [
+              {
+                "$ref": "#/components/schemas/ChangeSet"
+              },
+              {
+                "type": "null"
+              }
+            ]
+          }
+        },
+        "type": "object",
+        "required": [
+          "id",
+          "objective_id",
+          "title",
+          "agent_id",
+          "owned_paths",
+          "contract"
+        ],
+        "title": "Workstream"
+      }
+    }
+  }
+}
