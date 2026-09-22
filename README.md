@@ -34,7 +34,7 @@ No credentials are needed for the guided simulation. The default `IDENTITY_MODE=
 
 ## Using it from a coding agent (MCP)
 
-The coordinator ships as a stdio MCP server exposing six tools: join, claim workstream, declare contract, reassign scope, submit ChangeSet, and read state.
+The coordinator ships as a stdio MCP server exposing six tools: `join`, `claim`, `declare`, `scope`, `submit`, and `get_state`.
 
 ```sh
 uv run python -m server.mcp_server
