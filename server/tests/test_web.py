@@ -29,10 +29,12 @@ HOSTS = {
 # there, POST /api/live/runs would start a real run against the provider: slow,
 # billable, and different on every machine. These tests only care about routing
 # and auth, so every provider is pinned off.
-NO_PROVIDERS = dict(
-    backend_provider="none", frontend_provider="none", qa_provider="none",
-    orchestrator_provider="none",
-)
+NO_PROVIDERS = {
+    "backend_provider": "none",
+    "frontend_provider": "none",
+    "qa_provider": "none",
+    "orchestrator_provider": "none",
+}
 
 
 def client(tmp_path):
