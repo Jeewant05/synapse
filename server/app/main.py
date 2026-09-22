@@ -6,10 +6,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from server.app.acme import build_acme_router, parse_challenges
 from server.app.adapters import CacheMemory, IdentityAdapter, MemoryAdapter, MockIdentity
 from server.app.config import Settings
-from server.app.demo_runner import (
-    build_demo_router,
-    require_demo_token_for_public,
-)
+from server.app.demo_runner import build_demo_router
 from server.app.live_agents import LiveRuns
 from server.app.live_routes import build_live_router
 from server.app.models import Health, WorkspaceState
@@ -79,7 +76,6 @@ def build_memory(settings: Settings) -> MemoryAdapter:
 
 def create_app(settings: Settings | None = None) -> FastAPI:
     settings = settings or Settings()
-    require_demo_token_for_public(settings)
     _seed_if_empty(settings)
     app = FastAPI(title="Synapse API", version="0.6.0")
     app.add_middleware(
@@ -105,7 +101,6 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             live_integrations=settings.live_integrations,
             identity_tier="badge" if ans_identity else "none",
             dpop_required=bool(ans_identity and settings.ans_dpop_required),
-            reset_requires_token=bool(settings.demo_token),
         )
 
     @app.get("/api/state", response_model=WorkspaceState)
@@ -118,7 +113,6 @@ def create_app(settings: Settings | None = None) -> FastAPI:
             _fresh_state_for(settings),
             ans_identity=ans_identity,
             dpop_required=settings.ans_dpop_required,
-            demo_token=settings.demo_token,
         )
     )
     app.include_router(build_trace_router(trace))
@@ -146,9 +140,7 @@ def create_app(settings: Settings | None = None) -> FastAPI:
         if source in configured
     }
     runs = LiveRuns(providers, settings.resolved_database_path.parent / "live-runs", trace)
-    # Open by design: a run costs provider credit but loses no data, and the
-    # dashboard must work without a prompt. Only /api/reset is behind DEMO_TOKEN.
-    # /live/config reports which providers are configured either way.
+    # /live/config reports which providers are configured.
     app.include_router(build_live_router(runs))
 
     app.include_router(

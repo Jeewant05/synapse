@@ -15,9 +15,7 @@ class Settings(BaseSettings):
     memory_mode: Literal["cache", "databricks"] = "cache"
     trace_mode: Literal["cache", "databricks"] = "cache"
     database_path: Path = Path(".local/synapse.db")
-    # Shared secret for destructive or billable endpoints: /api/demo/run,
-    # /api/reset and the live-agent routes. Unset means those refuse to run.
-    demo_token: str | None = None
+    # Origins the Vite dev server runs on; the API only ever listens on loopback.
     cors_origins: str = "http://localhost:5173,http://127.0.0.1:5173"
 
     # One independent provider per role. "none" keeps that live role unconfigured.
@@ -104,9 +102,8 @@ class Settings(BaseSettings):
     databricks_schema: str = ""
     databricks_trace_table: str = "synapse_agent_traces"
 
-    # Loopback address the server-side demo runner posts to. The dev port;
-    # fly.toml sets 8080 explicitly. Proofs are signed against
-    # ans_public_base_url, not this, so the two differ by design.
+    # Loopback address the server-side demo runner posts to. Proofs are signed
+    # against ans_public_base_url, not this, so the two differ by design.
     local_base_url: str = "http://127.0.0.1:8000"
 
     @property

@@ -38,7 +38,7 @@ NO_PROVIDERS = {
 
 
 def client(tmp_path):
-    return TestClient(create_app(Settings(demo_token=None, database_path=tmp_path / "web.db", ans_domain=DOMAIN, **NO_PROVIDERS)))
+    return TestClient(create_app(Settings(database_path=tmp_path / "web.db", ans_domain=DOMAIN, **NO_PROVIDERS)))
 
 
 def test_agent_card_ansname_matches_the_host_it_is_served_on(tmp_path):
@@ -81,7 +81,7 @@ def test_every_api_route_lives_under_api(tmp_path):
     as opaque objects with no .path, so walking app.routes silently inspects
     almost nothing and the check passes no matter what is mounted.
     """
-    app = create_app(Settings(demo_token=None, database_path=tmp_path / "routes.db", ans_domain=DOMAIN))
+    app = create_app(Settings(database_path=tmp_path / "routes.db", ans_domain=DOMAIN))
     # /.well-known/* is fixed by external specs -- the ANS agent card and the
     # ACME HTTP-01 challenge path -- so it cannot live under /api.
     stray = [
@@ -116,7 +116,7 @@ def test_acme_challenge_is_served_when_configured(tmp_path):
     token = "wl6tGSamNFoaXjw/KtXtFFtesYnCVkWHFr5es9kA4as="
     key_auth = f"{token}.thumbprint"
     app = create_app(Settings(
-        demo_token=None, database_path=tmp_path / "acme.db", ans_domain=DOMAIN,
+        database_path=tmp_path / "acme.db", ans_domain=DOMAIN,
         acme_challenges=json.dumps({token: key_auth}),
     ))
     r = TestClient(app).get(f"/.well-known/acme-challenge/{token}")
@@ -126,7 +126,7 @@ def test_acme_challenge_is_served_when_configured(tmp_path):
 
 def test_unknown_acme_token_is_not_found(tmp_path):
     app = create_app(Settings(
-        demo_token=None, database_path=tmp_path / "acme.db", ans_domain=DOMAIN,
+        database_path=tmp_path / "acme.db", ans_domain=DOMAIN,
         acme_challenges='{"real": "real.thumb"}',
     ))
     assert TestClient(app).get("/.well-known/acme-challenge/made-up").status_code == 404
@@ -136,51 +136,7 @@ def test_malformed_acme_config_does_not_break_startup(tmp_path):
     """A bad secret must not take the whole site down."""
     for raw in ["not json", "[]", "", None]:
         app = create_app(Settings(
-            demo_token=None, database_path=tmp_path / "acme.db", ans_domain=DOMAIN,
+            database_path=tmp_path / "acme.db", ans_domain=DOMAIN,
             acme_challenges=raw,
         ))
         assert TestClient(app).get("/api/health").status_code == 200
-
-
-# --- DEMO_TOKEN guards /api/reset and nothing else ---------------------------
-
-
-def guarded(tmp_path):
-    return TestClient(create_app(Settings(
-        demo_token="s3cret", database_path=tmp_path / "guard.db", ans_domain=DOMAIN, **NO_PROVIDERS,
-    )))
-
-
-def test_reset_requires_the_token_when_one_is_configured(tmp_path):
-    """Reset destroys state, so it is the one endpoint a stranger must not reach."""
-    c = guarded(tmp_path)
-    assert c.post("/api/reset").status_code == 401
-    assert c.post("/api/reset", headers={"X-Demo-Token": "wrong"}).status_code == 401
-    assert c.post("/api/reset", headers={"X-Demo-Token": "s3cret"}).status_code == 200
-
-
-def test_live_runs_and_the_demo_runner_are_open(tmp_path):
-    """The dashboard presses these with no prompt, so they must not need the token.
-
-    Neither may answer 401. The status they do return without providers or
-    identity material configured is beside the point here.
-    """
-    c = guarded(tmp_path)
-    assert c.post("/api/live/runs", json={"objective": "Build tasks"}).status_code != 401
-    assert c.post("/api/demo/run").status_code != 401
-    assert c.get("/api/live/config").status_code == 200
-
-
-def test_health_tells_the_ui_whether_reset_needs_a_token(tmp_path):
-    assert guarded(tmp_path).get("/api/health").json()["reset_requires_token"] is True
-    assert client(tmp_path).get("/api/health").json()["reset_requires_token"] is False
-
-
-def test_a_public_deployment_still_refuses_to_start_with_reset_open(tmp_path):
-    import pytest
-
-    with pytest.raises(RuntimeError, match="/api/reset"):
-        create_app(Settings(
-            demo_token=None, database_path=tmp_path / "pub.db",
-            ans_public_base_url="https://synapse-vt.us", ans_domain=DOMAIN,
-        ))

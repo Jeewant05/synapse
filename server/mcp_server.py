@@ -4,7 +4,7 @@ Thin on purpose: each tool is one HTTP call to the running coordinator. The
 rules live in server/app/service.py; this file only carries them over stdio.
 
 Run:  uv run python -m server.mcp_server
-Env:  SYNAPSE_BASE_URL (default http://127.0.0.1:8000), DEMO_TOKEN (optional)
+Env:  SYNAPSE_BASE_URL (default http://127.0.0.1:8000)
 """
 
 import os
@@ -14,16 +14,12 @@ import httpx
 from mcp.server.fastmcp import FastMCP
 
 BASE_URL = os.environ.get("SYNAPSE_BASE_URL", "http://127.0.0.1:8000").rstrip("/")
-DEMO_TOKEN = os.environ.get("DEMO_TOKEN")
 
 mcp = FastMCP("synapse")
 
 
 def _call(method: str, path: str, payload: dict[str, Any] | None = None) -> dict[str, Any]:
-    headers = {"X-Demo-Token": DEMO_TOKEN} if DEMO_TOKEN else {}
-    response = httpx.request(
-        method, f"{BASE_URL}{path}", json=payload, headers=headers, timeout=15
-    )
+    response = httpx.request(method, f"{BASE_URL}{path}", json=payload, timeout=15)
     if response.is_error:
         # Return the coordinator's reason instead of raising, so the agent can read
         # why it was refused: 409 = collision or scope, 403 = identity.

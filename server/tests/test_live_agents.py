@@ -232,7 +232,7 @@ def test_preview_rejects_noninteractive_or_embedded_documents(content):
 
 
 def test_live_config_reports_each_missing_api(tmp_path):
-    client = TestClient(create_app(Settings(demo_token=None, 
+    client = TestClient(create_app(Settings(
         database_path=tmp_path / "state.db", trace_mode="cache", backend_provider="none",
         frontend_provider="none", qa_provider="none",
     )))
@@ -493,12 +493,3 @@ def test_a_run_whose_directory_cannot_be_created_still_reports_failure(tmp_path)
 
     assert run.status == "failed"
     assert run.snapshot()["error"]
-
-
-def test_the_container_image_installs_git():
-    """The cause was the environment, not the code, so guard the Dockerfile itself."""
-    from server.app.config import ROOT
-
-    dockerfile = (ROOT / "Dockerfile").read_text()
-    runtime = dockerfile[dockerfile.index("AS runtime"):]
-    assert "apt-get install" in runtime and " git" in runtime

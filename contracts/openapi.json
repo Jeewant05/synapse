@@ -279,26 +279,8 @@
     "/api/reset": {
       "post": {
         "summary": "Reset",
-        "description": "Replace the workspace with the seeded fixture.\n\nDestructive, so it is behind the shared demo secret: on a public\ndeployment an open reset lets anyone wipe the demo mid-presentation.",
+        "description": "Replace the local workspace with the seeded fixture.",
         "operationId": "reset_api_reset_post",
-        "parameters": [
-          {
-            "name": "x-demo-token",
-            "in": "header",
-            "required": false,
-            "schema": {
-              "anyOf": [
-                {
-                  "type": "string"
-                },
-                {
-                  "type": "null"
-                }
-              ],
-              "title": "X-Demo-Token"
-            }
-          }
-        ],
         "responses": {
           "200": {
             "description": "Successful Response",
@@ -306,16 +288,6 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/WorkspaceState"
-                }
-              }
-            }
-          },
-          "422": {
-            "description": "Validation Error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/HTTPValidationError"
                 }
               }
             }
@@ -1656,11 +1628,6 @@
           "dpop_required": {
             "type": "boolean",
             "title": "Dpop Required",
-            "default": false
-          },
-          "reset_requires_token": {
-            "type": "boolean",
-            "title": "Reset Requires Token",
             "default": false
           }
         },

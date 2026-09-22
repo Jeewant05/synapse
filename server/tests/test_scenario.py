@@ -13,7 +13,7 @@ APPROVED = {"token": "string", "user": "object"}
 def _client(tmp_path):
     path = tmp_path / "scenario.db"
     write_state(path, demo_state())
-    return TestClient(create_app(Settings(demo_token=None, 
+    return TestClient(create_app(Settings(
         database_path=path, trace_mode="cache", backend_provider="none",
         frontend_provider="none", qa_provider="none",
     )))

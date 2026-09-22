@@ -11,16 +11,12 @@ loopback. That works because an ANS-6 verifier compares `htu` against its
 configured authority and never reads the `Host` header, so a proof signed for
 the public URL verifies on a local hop. The gate is the same one an external
 caller would face.
-
-Guarded by a shared secret: it mutates the workspace and costs real verification
-work, so it is not something a stranger should be able to trigger.
 """
 
 import asyncio
 import logging
-import secrets
 
-from fastapi import APIRouter, Header, HTTPException
+from fastapi import APIRouter
 from pydantic import BaseModel
 
 from agents.clients import APPROVED_CONTRACT, CONSUMER_CONTRACT, PASSED_TEST, AgentClient
@@ -91,51 +87,9 @@ def _run(settings: Settings, local_base: str) -> DemoRunResponse:
     return DemoRunResponse(status="complete", agents=[a for a, *_ in PLAN])
 
 
-def build_demo_guard(demo_token: str | None):
-    """Dependency requiring the shared demo secret.
-
-    Guards `/reset` only. It is the one endpoint that destroys state, so it is
-    the one a stranger who finds the URL must not be able to trigger. Live runs
-    and the demo runner are deliberately open: the dashboard has to work without
-    a prompt, and the cost of that choice is provider credit, not lost data.
-    """
-
-    def guard(x_demo_token: str | None = Header(default=None)) -> None:
-        if not demo_token:
-            # Local development: no token configured, nothing to check. A public
-            # deployment cannot reach here -- require_demo_token_for_public()
-            # refuses to build the app without one.
-            return
-        # Constant-time: a timing oracle on a demo token is still a timing oracle.
-        if not x_demo_token or not secrets.compare_digest(x_demo_token, demo_token):
-            raise HTTPException(401, "invalid or missing X-Demo-Token")
-
-    return guard
-
-
-LOCAL_HOSTS = {"127.0.0.1", "localhost", "::1", "0.0.0.0", "testserver"}
-
-
-def require_demo_token_for_public(settings: Settings) -> None:
-    """Refuse to start a public deployment whose /reset is open.
-
-    Checked at startup rather than per request so the failure is loud and happens
-    before the first visitor, not after.
-    """
-    from urllib.parse import urlsplit
-
-    host = (urlsplit(settings.ans_public_base_url).hostname or "").lower()
-    if host in LOCAL_HOSTS or settings.demo_token:
-        return
-    raise RuntimeError(
-        f"ANS_PUBLIC_BASE_URL is public ({host}) but DEMO_TOKEN is unset. "
-        "/api/reset would let anyone wipe the workspace. Set DEMO_TOKEN."
-    )
-
-
 def build_demo_router(settings: Settings, local_base: str) -> APIRouter:
-    # Open on purpose: this is the button the dashboard presses. It is not
-    # destructive -- it never resets -- so replaying it cannot lose state.
+    # This is the button the dashboard presses. It never resets, so replaying
+    # it cannot lose state.
     router = APIRouter(prefix="/api/demo", tags=["demo"])
 
     @router.post("/run", response_model=DemoRunResponse)

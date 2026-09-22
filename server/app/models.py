@@ -131,8 +131,6 @@ class Health(BaseModel):
     # ANS mode only: what the coordinator actually verifies, for the integrations panel.
     identity_tier: Literal["badge", "scitt", "none"] = "none"
     dpop_required: bool = False
-    # True when /api/reset needs X-Demo-Token, so the UI prompts only then.
-    reset_requires_token: bool = False
 
 
 class WorkspaceState(BaseModel):

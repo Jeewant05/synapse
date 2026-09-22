@@ -15,7 +15,7 @@ from server.app.tracing import DatabricksTraceSink
 def test_health_and_seeded_state(tmp_path):
     path = tmp_path / "test.db"
     write_state(path, demo_state())
-    client = TestClient(create_app(Settings(demo_token=None, 
+    client = TestClient(create_app(Settings(
         database_path=path, trace_mode="cache", backend_provider="none",
         frontend_provider="none", qa_provider="none",
     )))
@@ -31,7 +31,7 @@ def test_health_and_seeded_state(tmp_path):
 def test_coordinator_events_are_available_from_trace_api(tmp_path):
     path = tmp_path / "test.db"
     write_state(path, demo_state())
-    client = TestClient(create_app(Settings(demo_token=None, 
+    client = TestClient(create_app(Settings(
         database_path=path, trace_mode="cache", backend_provider="none",
         frontend_provider="none", qa_provider="none",
     )))

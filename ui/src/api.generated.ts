@@ -134,10 +134,7 @@ export interface paths {
         put?: never;
         /**
          * Reset
-         * @description Replace the workspace with the seeded fixture.
-         *
-         *     Destructive, so it is behind the shared demo secret: on a public
-         *     deployment an open reset lets anyone wipe the demo mid-presentation.
+         * @description Replace the local workspace with the seeded fixture.
          */
         post: operations["reset_api_reset_post"];
         delete?: never;
@@ -703,11 +700,6 @@ export interface components {
              * @default false
              */
             dpop_required: boolean;
-            /**
-             * Reset Requires Token
-             * @default false
-             */
-            reset_requires_token: boolean;
         };
         /** IntentionContract */
         IntentionContract: {
@@ -1281,9 +1273,7 @@ export interface operations {
     reset_api_reset_post: {
         parameters: {
             query?: never;
-            header?: {
-                "x-demo-token"?: string | null;
-            };
+            header?: never;
             path?: never;
             cookie?: never;
         };
@@ -1296,15 +1286,6 @@ export interface operations {
                 };
                 content: {
                     "application/json": components["schemas"]["WorkspaceState"];
-                };
-            };
-            /** @description Validation Error */
-            422: {
-                headers: {
-                    [name: string]: unknown;
-                };
-                content: {
-                    "application/json": components["schemas"]["HTTPValidationError"];
                 };
             };
         };

@@ -20,7 +20,6 @@ def _settings(tmp_path) -> Settings:
     path = tmp_path / "demo.db"
     write_state(path, demo_state())
     return Settings(
-        demo_token=None,
         database_path=path,
         identity_mode="mock",
         trace_mode="cache",

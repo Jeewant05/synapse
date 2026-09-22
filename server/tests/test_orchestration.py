@@ -7,7 +7,7 @@ from server.app.main import create_app
 
 
 def _client(tmp_path):
-    return TestClient(create_app(Settings(demo_token=None, database_path=tmp_path / "orchestration.db", trace_mode="cache")))
+    return TestClient(create_app(Settings(database_path=tmp_path / "orchestration.db", trace_mode="cache")))
 
 
 def _changeset(workstream_id: str, agent_id: str, files: list[str], symbols: list[str], *, version: int = 1,

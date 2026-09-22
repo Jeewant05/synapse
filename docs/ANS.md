@@ -218,9 +218,8 @@ dashboard at `/` (`server/app/web.py`). The dev proxy no longer rewrites the
 prefix, so a DPoP proof signed in development binds the same path it will bind in
 production — `htu` is exact, and a mismatch is a rejection.
 
-`Dockerfile` and `fly.toml` deploy one container answering on the apex and the
-three agent subdomains. `/.well-known/agent-card.json` is routed by `Host`, so
-each registered agent serves its own card rather than the coordinator's.
+`/.well-known/agent-card.json` is routed by `Host`, so each registered agent
+serves its own card rather than the coordinator's.
 
 ### The dashboard in ANS mode
 
@@ -230,19 +229,8 @@ proofs are real: each agent signs against `ANS_PUBLIC_BASE_URL` while the reques
 travels over loopback, which verifies because an ANS-6 verifier compares `htu`
 against configured authority and never reads the `Host` header.
 
-The runner is open — the dashboard presses it with no prompt. It never resets, so
-replaying it cannot lose state. Only Reset asks for `DEMO_TOKEN`, and only when
-`/api/health` reports `reset_requires_token`; the UI keeps the token in
-`sessionStorage` after the server accepts it, and forgets it if the server does not.
-
-### Fail closed by construction
-
-`require_demo_token_for_public()` refuses to build the app when
-`ANS_PUBLIC_BASE_URL` is a public host and `DEMO_TOKEN` is unset — `/api/reset`
-would otherwise let anyone who finds the URL wipe the workspace. The failure is at
-startup, before the first visitor. Local
-development is unaffected: with no token configured and a loopback URL, the guard
-allows through.
+The runner never resets, so replaying it cannot lose state. Synapse runs on
+loopback only, so `/api/reset` has no guard.
 
 ### Registering against a platform-managed certificate
 
@@ -254,8 +242,8 @@ ourselves and can serve exactly the registered certificate.
 
 ### DNS records at Porkbun
 
-The app is `synapse-vt` on Fly (`synapse-vt.fly.dev`). Four hostnames point at it.
-Fly issues the certificates once these resolve.
+During the hackathon the coordinator was hosted at `synapse-vt.us` with four
+hostnames pointing at it; the records below are kept as a worked example.
 
 | Type | Host (Porkbun "Host" field) | Answer |
 | --- | --- | --- |
